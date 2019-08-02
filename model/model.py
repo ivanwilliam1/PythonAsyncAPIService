@@ -1,9 +1,7 @@
 from typing import *
 from datetime import datetime
-from attr import attrs, attrib, Factory
+from attr import attrs, Factory
 from bson import Decimal128, ObjectId
-from bson.decimal128 import create_decimal128_context
-import traceback
 
 
 @attrs(slots=True, auto_attribs=True)
@@ -12,7 +10,7 @@ class Date:
     year: int
 
     @classmethod
-    def FromPeriod(cls, period):
+    def from_period(cls, period):
         fmt = "%Y%m%d"
         d = datetime.strptime(period.split('-')[0], fmt)
         return cls(d.month, d.year)
@@ -37,12 +35,12 @@ class Date:
 class ChildField:
     date: Optional[Date]
     name: Optional[str] = Factory(lambda: None)
-    id: str = Factory(lambda: str(ObjectId())) # unique id for the entry, used for deletions
+    id: str = Factory(lambda: str(ObjectId()))  # unique id for the entry, used for deletions
 
     def to_bson(self):
         return {
             '_id': ObjectId(self.id),
-            'name' : self.name,
+            'name': self.name,
             'date': None if self.date is None else self.date.to_bson()
         }
 
@@ -55,26 +53,26 @@ class Document:
     child_field: List[ChildField] = Factory(list)
     id: Optional[str] = Factory(lambda: str(ObjectId()))
 
-    def child_field_index(self, id:str):
+    def child_field_index(self, id: str):
         child_field_ids = [sub.id for sub in self.child_field]
         try:
             return child_field_ids.index(id)
         except ValueError:
             return None
 
-    def find_child_field(self, id:str):
+    def find_child_field(self, id: str):
         index = self.child_field_index(id)
         if index is None:
             return None
         return self.child_field[index]
 
-    def set_archived(self, value:bool) -> None:
+    def set_archived(self, value: bool) -> None:
         self.archived = value
 
-    def add_child_field(self, child_field:ChildField):
+    def add_child_field(self, child_field: ChildField):
         self.child_field.append(child_field)
 
-    def remove_child_field(self, id:str) -> None:
+    def remove_child_field(self, id: str) -> None:
         index = self.child_field_index(id)
 
         if index is None:
@@ -82,7 +80,7 @@ class Document:
 
         del self.child_field[index]
 
-    def update_child_field(self, child_field:ChildField):
+    def update_child_field(self, child_field: ChildField):
         index = self.child_field_index(child_field.id)
 
         if index is None:
@@ -90,7 +88,7 @@ class Document:
 
         self.child_field[index] = child_field
 
-    def find_child_field_for_date(self, sub_date:Date) -> Optional[ChildField]:
+    def find_child_field_for_date(self, sub_date: Date) -> Optional[ChildField]:
         for sub in self.child_field:
             if sub.date == sub_date:
                 return sub

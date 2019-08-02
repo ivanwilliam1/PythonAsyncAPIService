@@ -1,10 +1,9 @@
 import graphene
-from graphene.types.datetime import DateTime
-from bson import ObjectId
 import model.model as model
 import model.repo as repo
 
 document_repo = None
+
 
 def set_repos(_document_repo=None):
     global document_repo
@@ -13,8 +12,8 @@ def set_repos(_document_repo=None):
 
 
 class Date(graphene.ObjectType):
-    month= graphene.Int()
-    year= graphene.Int()
+    month = graphene.Int()
+    year = graphene.Int()
 
     @classmethod
     def from_model(cls, date):
@@ -30,8 +29,8 @@ class ChildField(graphene.ObjectType):
     def from_model(cls, child_field):
         return cls(
             id=str(child_field.id),
-            name = child_field.name,
-            date = child_field.date
+            name=child_field.name,
+            date=child_field.date
         )
 
 
@@ -73,10 +72,10 @@ class Query(graphene.ObjectType):
         try:
             document = await document_repo.find_by_id(id)
         except repo.InvalidId as exc:
-            return Errors([Error('id',['invalid'])])
+            return Errors([Error('id', ['invalid'])])
 
         if not document:
-            return Errors([Error('id',['not found'])])
+            return Errors([Error('id', ['not found'])])
 
         result = Document.from_model(document)
 
@@ -93,7 +92,7 @@ class Errors(graphene.ObjectType):
 
     @classmethod
     def from_exception(cls, exc):
-        return cls(errors=[Error(field=field,messages=messages) for field,messages in exc.errors.items()])
+        return cls(errors=[Error(field=field, messages=messages) for field, messages in exc.errors.items()])
 
 
 class DocumentResponse(graphene.Union):
@@ -143,10 +142,10 @@ class SetDocumentArchived(graphene.Mutation):
         try:
             document = await document_repo.find_by_id(set_archived.id)
         except repo.InvalidId as exc:
-            return Errors([Error('id',['invalid'])])
+            return Errors([Error('id', ['invalid'])])
 
         if not document:
-            return Errors([Error('id',['not found'])])
+            return Errors([Error('id', ['not found'])])
 
         document.set_archived(set_archived.archived)
         result = await document_repo.save(document)
@@ -181,10 +180,10 @@ class AddChildField(graphene.Mutation):
         try:
             document = await document_repo.find_by_id(add_child_field.document_id)
         except repo.InvalidId as exc:
-            return Errors([Error('id',['invalid'])])
+            return Errors([Error('id', ['invalid'])])
 
         if not document:
-            return Errors([Error('id',['not found'])])
+            return Errors([Error('id', ['not found'])])
 
         document.add_child_field(
             model.ChildField(
@@ -216,15 +215,15 @@ class RemoveChildField(graphene.Mutation):
         try:
             document = await document_repo.find_by_id(remove_child_field.document_id)
         except repo.InvalidId as exc:
-            return Errors([Error('id',['invalid'])])
+            return Errors([Error('id', ['invalid'])])
 
         if not document:
-            return Errors([Error('id',['not found'])])
+            return Errors([Error('id', ['not found'])])
 
         try:
             document.remove_child_field(remove_child_field.child_field_id)
         except KeyError as exc:
-            return Errors([Error('contract_id',['not found'])])
+            return Errors([Error('contract_id', ['not found'])])
 
         result = await document_repo.save(document)
 
@@ -239,7 +238,7 @@ class EditChildFieldInput(graphene.InputObjectType):
 
 class EditChildFieldMutationInput(graphene.InputObjectType):
     document_id = graphene.ID(required=True)
-    child_field = graphene.InputField(EditChildFieldInput , description="Child field to update")
+    child_field = graphene.InputField(EditChildFieldInput, description="Child field to update")
 
 
 class EditChildField(graphene.Mutation):
@@ -255,14 +254,14 @@ class EditChildField(graphene.Mutation):
         try:
             document = await document_repo.find_by_id(edit_child_field.document_id)
         except repo.InvalidId as exc:
-            return Errors([Error('id',['invalid'])])
+            return Errors([Error('id', ['invalid'])])
 
         if not document:
-            return Errors([Error('id',['not found'])])
+            return Errors([Error('id', ['not found'])])
 
         try:
             document.update_child_field(model.ChildField(
-                id= edit_child_field.child_field.id,
+                id=edit_child_field.child_field.id,
                 name=edit_child_field.child_field.name,
                 date=edit_child_field.child_field.date.to_model()
             ))
@@ -273,7 +272,6 @@ class EditChildField(graphene.Mutation):
         result = await document_repo.save(document)
 
         return Document.from_model(result)
-
 
 
 class Mutation(graphene.ObjectType):

@@ -10,6 +10,7 @@ from . import gqlschema as gql
 
 app = Sanic(__name__)
 
+
 @app.route("/")
 async def test(request):
     return json({"hello": "world"})

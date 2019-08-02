@@ -5,11 +5,6 @@ try:
 except ImportError:
     from eventemitter import EventEmitter
 
-# try:
-#     import model
-# except ImportError:
-#     from model import model
-
 try:
     from . import model
 except ImportError:
@@ -25,7 +20,6 @@ from bson import ObjectId, Decimal128
 from pymongo import ReturnDocument
 import pymongo.errors
 from bson.errors import InvalidId
-
 
 
 def munge_object(v):
@@ -55,11 +49,11 @@ def munge_dict(d):
     Munges a dictionary of things from mongodb to make them json-serializable.
     """
     # convert a mongodb record to json for deserialization
-    return {k:munge_object(v) for k,v in d.items()}
+    return {k: munge_object(v) for k, v in d.items()}
 
 
 class RepoError(Exception):
-    def __init__(self, errors:Dict[str,List[str]]):
+    def __init__(self, errors: Dict[str, List[str]]):
         super(RepoError, self).__init__()
         self.errors = errors
 
@@ -86,11 +80,11 @@ class DocumentRepo(EventEmitter):
         assert(not errors)
         return result
 
-    async def find_by_id(self, id:str) -> Optional[model.Document]:
+    async def find_by_id(self, id: str) -> Optional[model.Document]:
         """
         Can raise an InvalidId error if id is not a valid ObjectId
         """
-        document = await self.collection.find_one({'_id':ObjectId(id)})
+        document = await self.collection.find_one({'_id': ObjectId(id)})
         return self._create_from_document(document) if document is not None else None
 
     async def find(self, criteria=None) -> Iterator[model.Document]:
@@ -99,10 +93,10 @@ class DocumentRepo(EventEmitter):
             yield self._create_from_document(document)
 
     async def create(self,
-                     name:str,
-                     age:Optional[int]=None,
-                     archived:Optional[bool]=None,
-                     child_field:Optional[List]=None) -> model.Document:
+                     name: str,
+                     age: Optional[int]=None,
+                     archived: Optional[bool]=None,
+                     child_field: Optional[List]=None) -> model.Document:
         document = model.Document(name=name, age=age, archived=archived, child_field=child_field or [])
         try:
             res = await self.collection.insert_one(document.to_bson())
@@ -113,10 +107,10 @@ class DocumentRepo(EventEmitter):
         self.emit("DocumentCreated", result)
         return result
 
-    async def save(self, document:model.Document) -> None:
+    async def save(self, document: model.Document) -> None:
         data = document.to_bson()
         document = await self.collection.find_one_and_replace(
-            {'_id':data.pop('_id')},
+            {'_id': data.pop('_id')},
             data,
             return_document=ReturnDocument.AFTER
         )
@@ -126,7 +120,6 @@ class DocumentRepo(EventEmitter):
         self.emit('DocumentSaved', result)
 
         return result
-
 
 
 __all__ = [
