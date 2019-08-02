@@ -1,0 +1,35 @@
+mutation {
+  editChildField(editChildField:{
+    documentId: "<object id of document>"
+    childField:{
+      id: "<object id of child_field>"
+      name: "Test name Updated"
+      date: {
+        month: 5,
+        year: 2012
+      }
+    }
+
+  })
+  {
+  __typename
+    ... on Document {
+        id
+        name
+        age
+        childField{
+        name
+        date{
+          month
+          year
+        }
+      }
+    }
+    ... on Errors{
+      errors{
+        field
+        messages
+      }
+    }
+  }
+}

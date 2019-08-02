@@ -1,0 +1,20 @@
+mutation {
+  createDocument(document:{
+    name: "Name"
+    age: 20
+  })
+  {
+    __typename
+      ... on Document {
+        id
+        name
+        age
+    }
+    ... on Errors{
+       errors{
+         field
+         messages
+       }
+    }
+  }
+}

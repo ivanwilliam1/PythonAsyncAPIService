@@ -1,0 +1,31 @@
+mutation {
+  addChildField(addChildField:{
+    documentId: "<object id of document>"
+    name: "Test name"
+    date: {
+      month: 5,
+      year: 2010
+    }
+  })
+  {
+    __typename
+      ... on Document {
+        id
+        name
+        age
+        childField{
+        name
+        date{
+          month
+          year
+        }
+      }
+    }
+    ... on Errors{
+      errors{
+        field
+        messages
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+query{
+  documents{
+    id
+    name
+    age
+  }
+}

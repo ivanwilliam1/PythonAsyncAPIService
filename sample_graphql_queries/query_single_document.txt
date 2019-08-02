@@ -1,0 +1,7 @@
+query{
+  document(id: "<object id of document>"){
+    id
+    name
+    age
+  }
+}

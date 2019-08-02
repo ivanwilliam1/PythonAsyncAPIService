@@ -1,0 +1,22 @@
+mutation {
+  setDocumentArchived(setArchived:{
+    id: "<object id of document>"
+    archived: true
+
+  })
+  {
+    __typename
+      ... on Document {
+        id
+        name
+        age
+        archived
+    }
+    ... on Errors{
+      errors{
+        field
+        messages
+      }
+    }
+  }
+}

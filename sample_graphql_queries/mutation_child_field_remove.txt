@@ -1,0 +1,28 @@
+mutation {
+  removeChildField(removeChildField:{
+    documentId: "<object id of document>"
+    childFieldId: "<object id of child_field>"
+  
+  })
+  {
+  __typename
+    ... on Document {
+        id
+        name
+        age
+        childField{
+        name
+        date{
+          month
+          year
+        }
+      }
+    }
+    ... on Errors{
+      errors{
+        field
+        messages
+      }
+    }
+  }
+}
