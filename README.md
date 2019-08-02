@@ -12,7 +12,7 @@ Technologies used:
 
 ##### Clone repo.
 
-`git clone <repo link>`
+`git clone https://github.com/ivanwilliam1/PythonAsyncAPIService.git`
 
 ##### Change to app directory.
 
