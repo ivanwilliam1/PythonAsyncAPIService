@@ -1,0 +1,7 @@
+.pytest-cache
+__pycache__
+.hypothesis
+.coverage
+venv
+.DS_Store
+*.pyc
