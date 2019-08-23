@@ -21,7 +21,6 @@ class EventEmitter:
             try:
                 cb(*args, **kwds)
             except:
-                # todo; we should throw a warning
                 traceback.print_exc()
                 pass
 
