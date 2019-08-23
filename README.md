@@ -85,7 +85,7 @@ Alternately, there is a script which can be run with:
 
 MONGODB_HOST defaults to 'localhost'
 
-MONGODB_PORT defaults to mongodb's default port
+MONGODB_PORT defaults to mongodb's default port 27017
 
 MONGODB_DB_NAME defaults to "TEST" and refers to the mongodb database name for the collection given below
 
@@ -96,3 +96,23 @@ ADMIN_API_HOST defaults to 0.0.0.0
 ADMIN_API_PORT defaults to 8000
 
 AUTO_RELOAD defaults to true
+
+
+## Usage
+
+This is the fun part. Here you get to experiment with the service.
+
+### GET localhost:8000/
+You can hit this default endpoint of the API. The following json will be returned:
+
+{"hello":"world"}
+
+The purpose of this endpoint is to have something for the devops/networks team to aussure the availibility of the service. 
+
+
+### GET localhost:8000/graphql
+This is the endpoint for the graphql playground. You can use this endpoint to experiment with the API using graphql
+
+The sample graphql queries and mutations are available in `sample_graphql_queries/`. Use these sample commands to get started.
+
+Likewise, you can click on the "Docs" link in the playground and explore the models for queries and mutations.
