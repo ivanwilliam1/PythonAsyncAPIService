@@ -11,6 +11,6 @@ marshmallow==2.19.2
 marshmallow-annotations==2.4.0
 pymongo==3.7.2
 python-dotenv==0.10.3
-sanic==19.3.1
+sanic==20.12.7
 Sanic-GraphQL==1.1.0
 supervisor==4.0.3
